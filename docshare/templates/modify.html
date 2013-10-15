@@ -71,7 +71,7 @@
 					return;
 				}
 				txt="username="+$("#username").val()+"&"+"password_old="+oldps+"&"+"password_new="+newps+"&"+"email="+$("#email").val();
-				alert(txt);
+				//alert(txt);
 				$.post("/modifyChecker",txt,function(data,status){
 					var words=data.split(' ');
 					if (words.length>0){

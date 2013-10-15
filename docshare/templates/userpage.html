@@ -25,23 +25,44 @@
   </head>
   <body>
     <div class="round absolute-block" style="margin-top:2%;margin-left:100px;width:940px;height:600px;">
-		<div class="round absolute-block" style="background-color:#1ABC9C;width:30%;height:100%;">
-			<div class="round absolute-block" style="color:white;width:75%;height:35%;left:14%;top:10%;">
+		{% ifequal current_user login_user %}
+			<div class="round absolute-block" style="background-color:#1ABC9C;width:30%;height:100%;">
+		{% else %}
+			<div class="round absolute-block" style="background-color:#2980B9;width:30%;height:100%;">
+		{% endifequal %}
+			<div class="round absolute-block" style="background-color:;color:white;width:75%;height:10%;left:14%;top:5%;">
+				<center>
+				{% ifequal current_user login_user %}
+						<h3 for="username" class="demo-panel-title">My Info</h3>
+				{% else %}
+						<h3 for="username" class="demo-panel-title">{{current_user.username}}'s Info</h3>
+				{% endifequal %}
+				</center>
+			</div>
+			<div class="round absolute-block" style="background-color:;color:white;width:75%;height:35%;left:14%;top:14%;">
 				<div class="round absolute-block" style="width:100%;height:50%;">
-					<h4 class="absolute-block" style="top:20%">{{current_user.username}}</h4>
+					<!--<h4 class="absolute-block" style="top:20%">{{current_user.username}}</h4>-->
+					<h4 for="username" class="demo-panel-title">Username</h4>
+					<input style="color:#34495E" type="text" id="username" disabled="disabled" value="{{current_user.username}}" placeholder="Enter Your Name"></input>
 				</div>
 				<div class="round absolute-block" style="width:100%;height:50%;top:50%;">
-					<h4 class="absolute-block" style="top:25%">{{current_user.email}}</h4>
+					<!--<h4 class="absolute-block" style="top:25%">{{current_user.email}}</h4>-->
+					<h4 for="mail" class="demo-panel-title">Email</h4>
+					<input style="color:#34495E" type="text" id="mail" disabled="disabled" value="{{current_user.email}}" placeholder="Enter Your Name"></input>
 				</div>
 			</div>
-			<div class="round absolute-block" style="width:75%;height:5%;left:14%;top:50%">
-				<button id="button_modify" class="btn btn-inverse absolute-block" style="width:50%;height:100%;">Profile</button>
-				<button id="button_logout" class="btn btn-danger absolute-block" style="width:50%;height:100%;left:50%">Logout</button>
-				<button id="button_return" class="btn btn-danger absolute-block" style="display:none;width:50%;height:100%;left:25%">Return</button>
+			<div class="round absolute-block" style="width:75%;height:5%;left:14%;top:55%">
+				{% ifequal login_user current_user %}
+				<button id="button_modify" class="btn btn-inverse absolute-block" style="width:47%;height:100%;">Profile</button>
+				<button id="button_logout" class="btn btn-inverse absolute-block" style="width:47%;height:100%;left:50%">Logout</button>
+				{% else %}
+				<button id="button_return" class="btn btn-invers absolute-block" style="width:50%;height:100%;left:25%">Return</button>
+				{% endifequal %}
 			</div>
+			<hr class="absolute-block" style="width:100%;height:1%;top:70%;background-color:white"/>
 			<input id="search_username" class="absolute-block" type="search" value="" placeholder="Username"
-					style="width:40%;height:2%;top:75%;left:14%"></input>
-			<button id="button_finduser" class="btn btn-danger absolute-block" style="width:30%;height:5%;top:75.35%;left:60%">Search</button>
+					style="width:40%;height:2%;top:85%;left:14%"></input>
+			<button id="button_search" class="btn btn-inverse absolute-block" style="width:30%;height:5%;top:85.35%;left:62%">Search</button>
 			<!--<div class="round absolute-block" style="background-color:white;width:75%;height:10%;left:14%;top:75%">
 				
 				--<div class="round absolute-block" style="background-color:blue;width:75%;height:100%;">
@@ -65,9 +86,11 @@
 						<th>
 							Display
 						</th>
-						<th>
-							Delete
-						</th>
+						{% ifequal current_user login_user %}
+							<th>
+								Delete
+							</th>
+						{% endifequal %}
 					<!--<tr style="color:#1ABC9C">
 					  <td width="50%">
 						doc1
@@ -89,6 +112,7 @@
 					</tr>
 					</tr>-->
 					{% for current_userbook in current_userbooks %}
+						{% ifequal current_user login_user %}
 						<tr style="color:#1ABC9C">
 							<td width="50%">
 								{{current_userbook.doc_name}}
@@ -96,18 +120,50 @@
 							<td>
 								<div class="toggle" style="margin:0 0 0 0">
 								  <label class="toggle-radio" for="tr{{current_userbook.id}}op2">Public</label>
-								  <input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op1" checked="checked">
+								  {% if current_userbook.public %}
+									<input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op1" checked="checked">
+								  {% else %}
+									<input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op1">
+								  {% endif %}
 								  <label class="toggle-radio" for="tr{{current_userbook.id}}op1">Private</label>
-								  <input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op2">
+								  {% if current_userbook.public %}
+									<input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op2">
+								  {% else %}
+									<input type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op2" checked="checked">
+								  {% endif %}
 								</div>
 							</td>
 							<td width="15%">
-								<a id="tr{{current_userbook.id}}display" href="#">Display</a>
+								<a target="_blank" id="tr{{current_userbook.id}}display" href="/render/{{current_userbook.id}}/">Display</a>
 							</td>
 							<td width="15%">
-								<a id="tr{{current_userbook.id}}delete" href="#">Delete</a>
+								{% ifequal login_user current_user %}
+									<a id="tr{{current_userbook.id}}delete" href="#">Delete</a>
+								{% else %}
+									
+								{% endifequal %}
 							</td>
 						</tr>
+						{% else %}
+							{% if current_userbook.public %}
+								<tr style="color:#1ABC9C">
+								<td width="50%">
+									{{current_userbook.doc_name}}
+								</td>
+								<td>
+									<div class="toggle" style="margin:0 0 0 0">
+									  <label class="toggle-radio" for="tr{{current_userbook.id}}op2">Public</label>
+									  <input disabled="disabled" type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op1" checked="checked">
+									  <label class="toggle-radio" for="tr{{current_userbook.id}}op1">Private</label>
+									  <input disabled="disabled" type="radio" name="tr{{current_userbook.id}}op" id="tr{{current_userbook.id}}op2">
+									</div>
+								</td>
+								<td width="15%">
+									<a target="_blank" id="tr{{current_userbook.id}}display" href="/render/{{current_userbook.id}}/">Display</a>
+								</td>
+								</tr>
+							{% endif %}
+						{% endifequal %}
 					{% endfor %}
 					
 				</table>
@@ -119,7 +175,12 @@
 					<input type="submit" id="submitfile" hidden>
 				</form>
 				<!--<button id="button_select" class="btn btn-info absolute-block" style="width:30%;height:60%;top:20%;left:18%;">Select</button>-->
-				<button id="button_upload" class="btn absolute-block" style="width:30%;height:50%;top:20%;left:35%;">Upload</button>
+				{% ifequal login_user current_user %}
+				<button id="button_upload" class="round btn btn-info absolute-block" style="width:30%;height:50%;top:20%;left:35%;">Upload</button>
+				{% else %}
+				<button id="button_upload" disabled="disabled" class="round btn absolute-block disabled" 
+										style="width:30%;height:50%;top:20%;left:35%;">Upload</button>
+				{% endifequal %}
 			</div>
 		</div>
 	</div>
@@ -174,15 +235,44 @@
 			});
 			$("#uploadfile").change(function(){
 				var x=$("#uploadfile").val();
-				alert(x);
+				//alert(x);
 				if (x!=""){
 					$("#submitfile").click();
 				}
 				else
 					return;
 			});
-			
+			$("#button_search").click(function(){
+				var x="current_user="+$("#search_username").val();
+				//alert(x);
+				//$.post("/homepage/?"+x,"");
+				location.href="/homepage/?"+x;
+			});
+			$("#button_return").click(function(){
+				location.href="/homepage/";
+			});
+			{% for current_userbook in current_userbooks %}
+				$("#tr{{current_userbook.id}}op1").click(function(){
+					//alert("tr{{current_userbook.id}}op1 action"+$("#tr{{current_userbook.id}}op1").attr("checked"));
+					$.post("/public/{{current_userbook.id}}/");
+				});
+				$("#tr{{current_userbook.id}}op2").click(function(){
+					//alert("tr{{current_userbook.id}}op2 action"+$("#tr{{current_userbook.id}}op2").attr("checked"));
+					$.post("/public/{{current_userbook.id}}/");
+				});
+				$("#tr{{current_userbook.id}}display").click(function(){
+					//alert("tr{{current_userbook.id}}display action");
+					//location.href="/render/{{current_userbook.id}}/";
+				});
+				$("#tr{{current_userbook.id}}delete").click(function(){
+					//alert("tr{{current_userbook.id}}delete action");
+					location.href="/delete/{{current_userbook.id}}/";
+				});
+			{% endfor %}
 		});
+	</script>
+	<script>
+		{{ javascript|safe }}
 	</script>
   </body>
 </html>

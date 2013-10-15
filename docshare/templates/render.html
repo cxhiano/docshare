@@ -1,8 +1,174 @@
-<div>
-    <h1> {{ doc_id }} </h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>UserPage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <br />
+    <link href="css/bootstrap.css" rel="stylesheet">
 
-    <embed height="100%" width="100%" name="plugin" src="/docs/{{ doc_id }}" type="application/pdf">
+    <link href="css/flat-ui.css" rel="stylesheet">
+	<link href="css/table.css" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico">
+	
+	<style type="text/css">
+		.round {
+			border-top-left-radius:10px;
+			border-top-right-radius:10px;
+			border-bottom-left-radius:10px;
+			border-bottom-right-radius:10px
+		}
+		.absolute-block{
+			position:absolute;
+		}
+	</style>
+  </head>
+  <body>
+    <div class="round absolute-block" style="margin-top:2%;margin-left:100px;width:940px;height:600px;">
+		<div class="round absolute-block" style="background-color:#1ABC9C;width:30%;height:100%;">
+			<div class="round absolute-block" style="color:white;width:75%;height:35%;left:14%;top:8%;">
+				<div class="round absolute-block" style="width:100%;height:50%;">
+					<!--<h4 class="absolute-block" style="top:20%">{{current_user.username}}</h4>-->
+					<h4 for="username" class="demo-panel-title">Username</h4>
+					<input style="color:#34495E" type="text" id="username" disabled="disabled" value="{{current_user.username}}" placeholder="Enter Your Name"></input>
+				</div>
+				<div class="round absolute-block" style="width:100%;height:50%;top:50%;">
+					<!--<h4 class="absolute-block" style="top:25%">{{current_user.email}}</h4>-->
+					<h4 for="mail" class="demo-panel-title">Email</h4>
+					<input style="color:#34495E" type="text" id="mail" disabled="disabled" value="{{current_user.email}}" placeholder="Enter Your Name"></input>
+				</div>
+			</div>
+			<div class="round absolute-block" style="width:75%;height:5%;left:14%;top:50%">
+				{% ifequal login_user current_user %}
+				<button id="button_modify" class="btn btn-inverse absolute-block" style="width:47%;height:100%;">Profile</button>
+				<button id="button_logout" class="btn btn-inverse absolute-block" style="width:47%;height:100%;left:50%">Logout</button>
+				{% else %}
+				<button id="button_return" class="btn btn-invers absolute-block" style="width:50%;height:100%;left:25%">Return</button>
+				{% endifequal %}
+			</div>
+			<hr class="absolute-block" style="width:100%;height:1%;top:70%;background-color:white"/>
+			<input id="search_username" class="absolute-block" type="search" value="" placeholder="Username"
+					style="width:40%;height:2%;top:85%;left:14%"></input>
+			<button id="button_search" class="btn btn-inverse absolute-block" style="width:30%;height:5%;top:85.35%;left:62%">Search</button>
+			<!--<div class="round absolute-block" style="background-color:white;width:75%;height:10%;left:14%;top:75%">
+				
+				--<div class="round absolute-block" style="background-color:blue;width:75%;height:100%;">
+					
+					
+				</div>
+				<div class="round absolute-block" style="background-color:blue;width:25%;height:100%;left:75%">
+				</div>
+			</div>-->
+		</div>
+		<div class="round absolute-block" style="background-color:;left:30.5%;width:70%;height:100%;">
+			<div class="round absolute-block" style="background-color:#ECF0F1;width:100%;height:89.8%;top:0.1%;overflow:auto">
+				 <embed class="absolute-block" style="width:100%;height:100%;overflow:auto" src="/docs/{{ doc_id }}" type="application/pdf">
+			</div>
+			<div class="round absolute-block" style="background-color:#BDC3C7;width:100%;height:10%;top:90%;">
+				<form id="fileform" enctype="multipart/form-data" action='/upload/' method='post'>
+					{% csrf_token %}
+					<input type="file" id="uploadfile" name="file" hidden>
+					<input type="submit" id="submitfile" hidden>
+				</form>
+				<!--<button id="button_select" class="btn btn-info absolute-block" style="width:30%;height:60%;top:20%;left:18%;">Select</button>-->
+				{% ifequal login_user current_user %}
+				<button id="button_upload" class="round btn btn-info absolute-block" style="width:30%;height:50%;top:20%;left:35%;">Upload</button>
+				{% else %}
+				<button id="button_upload" disabled="disabled" class="round btn absolute-block disabled" 
+										style="width:30%;height:50%;top:20%;left:35%;">Upload</button>
+				{% endifequal %}
+			</div>
+		</div>
+	</div>
 
-</div>
+    <!-- Load JS here for greater good =============================-->
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="js/jquery.dropkick-1.0.0.js"></script>
+    <script src="js/custom_checkbox_and_radio.js"></script>
+    <script src="js/custom_radio.js"></script>
+    <script src="js/jquery.tagsinput.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/jquery.placeholder.js"></script>
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+    <script src="js/application.js"></script>
+	<script type="text/javascript" src="js/jquery-CSRF.js"></script> 
+	<script>
+		$(document).ready(function(){
+			$("#fileform").hide();
+			$("#button_modify").click(function(){
+				location.href="/modify.html"
+				//alert("xx");
+				/*$.post("/modify",txt,function(data,status){
+					var words=data.split(' ');
+					if (words.length>0){
+						if (words[0]=="success"){
+							if (words.length>1)
+								location.href=words[1];
+							else
+								alert("error:no url information!");
+						}
+						else if (words[0]=="fail"){
+							if (words.length>1)
+								alert(words[1]);
+							else
+								alert("error:no error information!");
+						}
+						else{
+							alert("error:unknown information!");
+						}
+					}
+					else{
+						alert("error:no information!");
+					}
+				});*/
+			});
+			$("#button_logout").click(function(){
+				location.href="/logout/";
+			});
+			$("#button_upload").click(function(){
+				$("#uploadfile").click();
+			});
+			$("#uploadfile").change(function(){
+				var x=$("#uploadfile").val();
+				alert(x);
+				if (x!=""){
+					$("#submitfile").click();
+				}
+				else
+					return;
+			});
+			$("#button_search").click(function(){
+				var x="current_user="+$("#search_username").val();
+				alert(x);
+				//$.post("/homepage/?"+x,"");
+				location.href="/homepage/?"+x;
+			});
+			$("#button_return").click(function(){
+				location.href="/homepage/";
+			});
+			{% for current_userbook in current_userbooks %}
+				$("#tr{{current_userbook.id}}op1").click(function(){
+					alert("tr{{current_userbook.id}}op1 action"+$("#tr{{current_userbook.id}}op1").attr("checked"));
+					$.post("/public/{{current_userbook.id}}/");
+				});
+				$("#tr{{current_userbook.id}}op2").click(function(){
+					alert("tr{{current_userbook.id}}op2 action"+$("#tr{{current_userbook.id}}op2").attr("checked"));
+					$.post("/public/{{current_userbook.id}}/");
+				});
+				$("#tr{{current_userbook.id}}display").click(function(){
+					alert("tr{{current_userbook.id}}display action");
+					$.post("/render/{{current_userbook.id}}/");
+				});
+				$("#tr{{current_userbook.id}}delete").click(function(){
+					alert("tr{{current_userbook.id}}delete action");
+					location.href="/delete/{{current_userbook.id}}/";
+				});
+			{% endfor %}
+		});
+	</script>
+	<script>
+		{{ javascript|safe }}
+	</script>
+  </body>
+</html>

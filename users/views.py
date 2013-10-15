@@ -14,7 +14,6 @@ def modify(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
     user = request.user
-    print "========="+user.username
     httpdict = {}
     httpdict["login_user"] = user
     return render_to_response("modify.html",httpdict,context_instance=RequestContext(request))
@@ -28,7 +27,11 @@ def user_modify_checker(request):
     user = auth.authenticate(username = request.POST["username"], password = request.POST["password_old"])
     if user is None:
         return HttpResponse("fail wrong password")
-    return HttpResponseRedirect('/')
+    if (request.POST["password_new"]!=""):
+        user.set_password(request.POST["password_new"])
+    user.email = request.POST["email"]
+    user.save()
+    return HttpResponse('success /')
     
 def register(request):
     return render_to_response('register.html',{},context_instance=RequestContext(request))
@@ -84,12 +87,19 @@ def logout(request):
     return HttpResponseRedirect('/')
     
 def homepage(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+    if not request.user.is_authenticated(): return HttpResponseRedirect('/')
+    
+    httpdict = {"javascript":""}
     user = request.user
-    try: cUser = User.objects.all().filter(username=request.POST["current_username"])
-    except: cUser = user
-    httpdict = {}
+    cUser = user
+    if request.GET.has_key("current_user"):
+        try:
+            cUser = User.objects.get(username=request.GET["current_user"])
+            if cUser.is_staff:
+                httpdict["javascript"] = 'alert("can\'t visit admin \\"'+request.GET["current_user"]+'\\"");'+'location.href="/homepage/";'
+                cUser = user
+        except:
+            httpdict["javascript"] = 'alert("no user named \\"'+request.GET["current_user"]+'\\"");'+'location.href="/homepage/";'
     httpdict["login_user"] = user
     httpdict["current_user"] = cUser
     httpdict["current_userbooks"] = getDoc(cUser)

@@ -6,6 +6,6 @@ class Document(models.Model):
     public = models.BooleanField()
     doc_name = models.CharField(max_length = 100)
     doc_file = models.FileField(upload_to = r'files/')
-    
+
     def __unicode__(self):
         return self.doc_name
