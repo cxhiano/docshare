@@ -31,4 +31,6 @@ urlpatterns = patterns('',
     url('^upload/$', documents.views.upload_file),
     url(r'^render/(\d+)/$', documents.views.render_pdf),
     url(r'^docs/(?P<doc_id>\d+)/$', documents.views.serve_pdf),
+    url(r'^modify.html$', users.views.modify),
+    url(r'^modifyChecker$', users.views.user_modify_checker),
 )

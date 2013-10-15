@@ -10,6 +10,26 @@ from documents.views import getDoc
 def returnTemp(request,name):
     return render_to_response(name)
 
+def modify(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    user = request.user
+    print "========="+user.username
+    httpdict = {}
+    httpdict["login_user"] = user
+    return render_to_response("modify.html",httpdict,context_instance=RequestContext(request))
+
+def user_modify_checker(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('fail unlogin')
+    user = request.user
+    if user.username!=request.POST["username"]:
+        return HttpResponseRedirect('fail username dismatch')
+    user = auth.authenticate(username = request.POST["username"], password = request.POST["password_old"])
+    if user is None:
+        return HttpResponse("fail wrong password")
+    return HttpResponseRedirect('/')
+    
 def register(request):
     return render_to_response('register.html',{},context_instance=RequestContext(request))
 

@@ -139,25 +139,9 @@
 	<script>
 		$(document).ready(function(){
 			$("#fileform").hide();
-			$("#button_logout").click(function(){
-				location.href="/logout/";
-			});
-			$("#button_upload").click(function(){
-				$("#uploadfile").click();
-			});
-			$("#uploadfile").change(function(){
-				var x=$("#uploadfile").val();
-				alert(x);
-				if (x!=""){
-					$("#submitfile").click();
-				}
-				else
-					return;
-			});
 			$("#button_modify").click(function(){
-				var txt="";
-				txt="username="+{{login_user.username}};
-				location.href="modify.html";
+				location.href="/modify.html"
+				//alert("xx");
 				/*$.post("/modify",txt,function(data,status){
 					var words=data.split(' ');
 					if (words.length>0){
@@ -182,6 +166,22 @@
 					}
 				});*/
 			});
+			$("#button_logout").click(function(){
+				location.href="/logout/";
+			});
+			$("#button_upload").click(function(){
+				$("#uploadfile").click();
+			});
+			$("#uploadfile").change(function(){
+				var x=$("#uploadfile").val();
+				alert(x);
+				if (x!=""){
+					$("#submitfile").click();
+				}
+				else
+					return;
+			});
+			
 		});
 	</script>
   </body>

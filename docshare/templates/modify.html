@@ -29,7 +29,7 @@
 		</div>
 		<div style="height:100%;width:70%;position:absolute;left:40%;top:5%;">
 			<h4 for="username" class="demo-panel-title">Username</h4>
-			<input type="text" id="username" disabled="disabled" value={{current_user.username}} placeholder="Enter Your Name"></input>
+			<input type="text" id="username" disabled="disabled" value="{{ login_user.username }}" placeholder="Enter Your Name"></input>
 			<h4 for="password" class="demo-panel-title">Old Password</h4>
 			<input type="password" id="password_old" value="" placeholder="Old Password"></input>
 			<h4 for="password" class="demo-panel-title">New Password</h4>
@@ -37,7 +37,7 @@
 			<h4 for="password" class="demo-panel-title">Confirm Password</h4>
 			<input type="password" id="password_confirm" value="" placeholder="Confirm Password"></input>
 			<h4 for="Email" class="demo-panel-title">Email</h4>
-			<input type="text" id="email" value="" placeholder={{current_user.email}}></input>
+			<input type="text" id="email" value="{{ login_user.email }}" placeholder="Email Address"></input>
 			<div>
 			<button id="button_submit" class="btn btn-large btn-danger" style="width:210px;margin-top:40px">Modify</button>
 			
@@ -63,13 +63,16 @@
 		$(document).ready(function(){
 			$("#button_submit").click(function(){
 				var txt="";
-				if ($("#password").val()!=$("#password_confirm").val()){
+				var oldps=$("#password_old").val();
+				var newps=$("#password_new").val();
+				var confirmps=$("#password_confirm").val();
+				if (newps!=confirmps){
 					alert("Password not confirmed!");
 					return;
 				}
-				txt="username="+$("#username").val()+"&"+"password="+$("#password").val()+"&"+"email="+$("#email").val();
+				txt="username="+$("#username").val()+"&"+"password_old="+oldps+"&"+"password_new="+newps+"&"+"email="+$("#email").val();
 				alert(txt);
-				$.post("/registerChecker",txt,function(data,status){
+				$.post("/modifyChecker",txt,function(data,status){
 					var words=data.split(' ');
 					if (words.length>0){
 						if (words[0]=="success"){
